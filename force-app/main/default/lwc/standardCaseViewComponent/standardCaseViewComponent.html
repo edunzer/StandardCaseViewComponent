@@ -1,5 +1,6 @@
 <template>
-    <lightning-card title="Case Details" icon-name="standard:case">
+    <!-- Case Details Card -->
+    <lightning-card title={caseNumber} icon-name="standard:case">
         <!-- Display error message if any -->
         <template if:true={errorMessage}>
             <lightning-tile label="Error" class="slds-m-around_medium">
@@ -10,27 +11,72 @@
         <!-- Case details -->
         <template if:true={caseRecord}>
             <div class="slds-p-around_medium">
-                <lightning-layout multiple-rows>
-                    <!-- Case Number -->
-                    <lightning-layout-item size="6">
-                        <div class="slds-text-title">Case Number</div>
-                        <div class="slds-text-body_regular">{caseRecord.fields.CaseNumber.value}</div>
-                    </lightning-layout-item>
 
-                    <!-- Contact Name -->
-                    <lightning-layout-item size="6">
-                        <div class="slds-text-title">Contact Name</div>
-                        <div class="slds-text-body_regular">{caseRecord.fields.Contact.displayValue}</div>
+                <!-- Record Type, Case Owner, Case Origin, Case Type Row -->
+                <lightning-layout multiple-rows class="slds-border_bottom slds-p-around_x-small">
+                    <lightning-layout-item size="6" class="slds-p-around_x-small">
+                        <div class="slds-text-title">Record Type</div>
+                        <div class="slds-text-body_regular">{recordTypeName}</div>
                     </lightning-layout-item>
-
-                    <!-- Contact Email -->
-                    <lightning-layout-item size="6">
-                        <div class="slds-text-title">Contact Email</div>
-                        <div class="slds-text-body_regular">{caseRecord.fields.ContactEmail.value}</div>
+                    <lightning-layout-item size="6" class="slds-p-around_x-small">
+                        <div class="slds-text-title">Case Owner</div>
+                        <div class="slds-text-body_regular">{ownerName}</div>
                     </lightning-layout-item>
-
-                    <!-- More fields go here -->
                 </lightning-layout>
+
+                <!-- Contact Name, Contact Email, Web Email Row -->
+                <lightning-layout multiple-rows class="slds-border_bottom slds-p-around_x-small">
+                    <lightning-layout-item size="6" class="slds-p-around_x-small">
+                        <div class="slds-text-title">Contact Name</div>
+                        <div class="slds-text-body_regular">{contactName}</div>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" class="slds-p-around_x-small">
+                        <div class="slds-text-title">Contact Email</div>
+                        <div class="slds-text-body_regular">{contactEmail}</div>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" class="slds-p-around_x-small">
+                        <div class="slds-text-title">Web Email</div>
+                        <div class="slds-text-body_regular">{suppliedEmail}</div>
+                    </lightning-layout-item>
+                </lightning-layout>         
+
+                <!-- Subject Row -->
+                <lightning-layout multiple-rows class="slds-p-around_x-small">
+                    <lightning-layout-item size="12" class="slds-p-around_x-small">
+                        <div class="slds-text-title">Subject</div>
+                        <div class="slds-text-body_regular">{subject}</div>
+                    </lightning-layout-item>
+                </lightning-layout>                
+            </div>
+        </template>
+    </lightning-card>
+
+    <!-- Path Component -->
+    <div class="slds-m-top_medium slds-m-bottom_medium">
+        <lightning-progress-indicator current-step={currentStep} type="path" variant="base">
+            <template for:each={pathStages} for:item="step">
+                <lightning-progress-step label={step.label} value={step.value} key={step.label}></lightning-progress-step>
+            </template>
+        </lightning-progress-indicator>
+    </div>
+
+    <!-- Related Emails Card -->
+    <lightning-card title="Related Emails" icon-name="standard:email">
+        <!-- Display the accordion of emails if there are emails available -->
+        <template if:true={emails.length}>
+            <lightning-accordion allow-multiple-sections>
+                <template for:each={emails} for:item="email">
+                    <lightning-accordion-section key={email.Id} label={email.formattedLabel}>
+                        <lightning-formatted-rich-text value={email.truncatedBody}></lightning-formatted-rich-text>
+                    </lightning-accordion-section>
+                </template>
+            </lightning-accordion>
+        </template>
+
+        <!-- Message when no emails are found -->
+        <template if:false={emails.length}>
+            <div class="slds-p-around_medium">
+                <p>No emails found for this case.</p>
             </div>
         </template>
     </lightning-card>

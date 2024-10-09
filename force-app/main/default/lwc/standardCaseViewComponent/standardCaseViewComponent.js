@@ -1,10 +1,10 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
-import getCaseEmails from '@salesforce/apex/CompactCaseViewController.getCaseEmails';
+import getCaseEmails from '@salesforce/apex/CaseEmailViewController.getCaseEmails';
 
 // Field API names
 import CASE_NUMBER_FIELD from '@salesforce/schema/Case.CaseNumber';
-import SUBJECT_FIELD from '@salesforce/schema/Case.Subject'; // Added import for Subject
+import SUBJECT_FIELD from '@salesforce/schema/Case.Subject';
 import RECORD_TYPE_ID_FIELD from '@salesforce/schema/Case.RecordTypeId';
 import OWNER_ID_FIELD from '@salesforce/schema/Case.OwnerId';
 import CONTACT_NAME_FIELD from '@salesforce/schema/Case.Contact.Name';
@@ -14,7 +14,7 @@ import SUPPLIED_EMAIL_FIELD from '@salesforce/schema/Case.SuppliedEmail';
 // Get Owner and RecordType fields dynamically
 const FIELDS = [
     CASE_NUMBER_FIELD,
-    SUBJECT_FIELD, // Add Subject field to FIELDS array
+    SUBJECT_FIELD,
     RECORD_TYPE_ID_FIELD,
     OWNER_ID_FIELD,
     CONTACT_NAME_FIELD,
@@ -53,7 +53,7 @@ export default class StandardCaseViewComponent extends LightningElement {
     fetchEmails() {
         getCaseEmails({ caseId: this.recordId })
             .then((result) => {
-                this.emails = result.map((email, index) => ({
+                this.emails = result.map((email) => ({
                     ...email,
                     formattedLabel: 'From: ' + email.FromAddress,
                     truncatedBody: this.extractLatestEmailContent(email.HtmlBody),
@@ -65,7 +65,7 @@ export default class StandardCaseViewComponent extends LightningElement {
                 }
             })
             .catch((error) => {
-                this.errorMessage = 'Error fetching emails: ' + error.body.message;
+                this.errorMessage = 'Error fetching emails: ' + (error.body ? error.body.message : 'An unknown error occurred.');
             });
     }
 

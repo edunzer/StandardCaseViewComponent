@@ -10,6 +10,7 @@ import OWNER_ID_FIELD from '@salesforce/schema/Case.OwnerId';
 import CONTACT_NAME_FIELD from '@salesforce/schema/Case.Contact.Name';
 import CONTACT_EMAIL_FIELD from '@salesforce/schema/Case.ContactEmail';
 import SUPPLIED_EMAIL_FIELD from '@salesforce/schema/Case.SuppliedEmail';
+import STATUS_FIELD from '@salesforce/schema/Case.Status';  // <-- Add the Status field
 
 // Get Owner and RecordType fields dynamically
 const FIELDS = [
@@ -19,7 +20,8 @@ const FIELDS = [
     OWNER_ID_FIELD,
     CONTACT_NAME_FIELD,
     CONTACT_EMAIL_FIELD,
-    SUPPLIED_EMAIL_FIELD
+    SUPPLIED_EMAIL_FIELD,
+    STATUS_FIELD  // <-- Add Status field to the list of fields
 ];
 
 export default class StandardCaseViewComponent extends LightningElement {
@@ -78,7 +80,7 @@ export default class StandardCaseViewComponent extends LightningElement {
 
     // Getter for the current step in the path component based on the case status
     get currentStep() {
-        return getFieldValue(this.caseRecord, 'Case.Status') || 'New'; // Default to 'New' if no status is available
+        return getFieldValue(this.caseRecord, STATUS_FIELD) || 'New'; // Updated to use STATUS_FIELD
     }
 
     // Getters for the fields
